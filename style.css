@@ -1,0 +1,474 @@
+@property --property-integer {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: true;
+} 
+
+@counter-style pad-1 {
+    system: numeric;
+    symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+    pad: 1 "0";
+}
+
+@counter-style pad-2 {
+    system: extends pad-1;
+    pad: 2 "0"
+}
+
+@counter-style pad-3 {
+    system: extends pad-1;
+    pad: 3 "0"
+}
+
+@counter-style pad-4 {
+    system: extends pad-1;
+    pad: 4 "0"
+}
+
+@counter-style pad-5 {
+    system: extends pad-1;
+    pad: 5 "0"
+}
+
+@counter-style pad-7 {
+    system: extends pad-1;
+    pad: 7 "0"
+}
+
+@counter-style no-zero {
+    system: numeric;
+    symbols: "\00AD" "";
+    range: 0 0
+}
+
+@counter-style number-sign {
+    system: numeric;
+    symbols: "" "";
+}
+
+body {
+    counter-reset: number-sign number-integer number-decimal;
+    --decimal-shift: 10000000;
+    --number-decimal-shift: 1;
+    --number-decimal-display: no-zero;
+    --second-number-decimal-shift: 1;
+    --second-number-decimal-display: no-zero;
+}
+
+.reset-number-counters {
+    counter-reset: number-integer number-decimal;
+}
+
+@counter-style compatability_base {
+    system: cyclic;
+    symbols: "This calculator will not work in your browser. Please use a chromium browser or click here to limit functionality";
+
+}
+
+@counter-style compatability_style {
+    system: cyclic;
+    fallback: compatability_base;
+    symbols: "";
+    range: 0 0;
+}
+
+.compatability {
+    counter-reset: compatability;
+    counter-increment: compatability calc(-99999 * 9999);
+}
+
+.compatability > .step-one {
+    counter-increment: compatability 999890002;
+}
+
+.compatability > .step-two {
+    --a: -0.1;
+    --property-interger: var(--a);
+    --b: calc((var(--a) - var(--property-integer)) * 10);
+    counter-increment: compatability var(--b);
+}
+
+.compatability > .step-two::after {
+    content: counter(compatability, compatability_style)
+}
+
+#reduced-functions:checked ~ .compatability {
+    display: none;
+}
+
+input[id$="digit-0"]:checked ~ .set-digit { --prev-digit: 0; }
+
+input[id$="digit-1"]:checked ~ .set-digit { --prev-digit: 1; }
+
+input[id$="digit-2"]:checked ~ .set-digit { --prev-digit: 2; }
+
+input[id$="digit-3"]:checked ~ .set-digit { --prev-digit: 3; }
+
+input[id$="digit-4"]:checked ~ .set-digit { --prev-digit: 4; }
+
+input[id$="digit-5"]:checked ~ .set-digit { --prev-digit: 5; }
+
+input[id$="digit-6"]:checked ~ .set-digit { --prev-digit: 6; }
+
+input[id$="digit-7"]:checked ~ .set-digit { --prev-digit: 7; }
+
+input[id$="digit-8"]:checked ~ .set-digit { --prev-digit: 8; }
+
+input[id$="digit-9"]:checked ~ .set-digit { --prev-digit: 9; }
+
+.set-first-digit { --first-digit: var(--prev-digit); }
+
+.set-second-digit { --second-digit: var(--prev-digit); }
+
+.set-third-digit { --third-digit: var(--prev-digit); }
+
+.set-fourth-digit { --fourth-digit: var(--prev-digit); }
+
+.set-fifth-digit { --fifth-digit: var(--prev-digit); }
+
+input[name$="first-digit"]:checked ~ * > * > * > * > * > .set-number {
+    --number-initial: var(--first-digit);
+    --number: calc(var(--number-initial) / var(--number-decimal-shift));
+}
+
+input[name$="second-digit"]:checked ~ * > * > * > * > .set-number {
+    --number-initial: calc(var(--first-digit)*10 + var(--second-digit));
+    --number: calc(var(--number-initial) / var(--number-decimal-shift));
+}
+
+input[name$="third-digit"]:checked ~ * > * > * > .set-number {
+    --number-initial: calc(var(--first-digit)*100 + var(--second-digit)*10 + var(--third-digit));
+    --number: calc(var(--number-initial) / var(--number-decimal-shift));
+}
+
+input[name$="fourth-digit"]:checked ~ * > * > .set-number {
+    --number-initial: calc(var(--first-digit)*1000 + var(--second-digit)*100 + var(--third-digit)*10 + var(--fourth-digit));
+    --number: calc(var(--number-initial) / var(--number-decimal-shift));
+}
+
+input[name$="fifth-digit"]:checked ~ * > .set-number {
+    --number-initial: calc(var(--first-digit)*10000 + var(--second-digit)*1000 + var(--third-digit)*100 + var(--fourth-digit)*10 + var(--fifth-digit));
+    --number: calc(var(--number-initial) / var(--number-decimal-shift));
+}
+
+
+input[name$="number-decimal-point"]:checked ~ input[name*="number"][name*="digit"]:checked ~ * {
+    --number-decimal-shift: 10;
+    --number-decimal-display: pad-1;
+}
+
+input[name$="number-decimal-point"]:checked ~ .set-digit > input[name*="number"][name*="digit"]:checked ~ * {
+    --number-decimal-shift: 100;
+    --number-decimal-display: pad-2;
+}
+
+input[name$="number-decimal-point"]:checked ~ .set-digit > .set-digit > input[name*="number"][name*="digit"]:checked ~ * {
+    --number-decimal-shift: 1000;
+    --number-decimal-display: pad-3;
+}
+
+input[name$="number-decimal-point"]:checked ~ .set-digit > .set-digit > .set-digit > input[name*="number"][name*="digit"]:checked ~ * {
+    --number-decimal-shift: 10000;
+    --number-decimal-display: pad-4;
+}
+
+.set-first-number {  
+    --first-number: var(--number);
+    --number-decimal-shift: 1;
+    --number-decimal-display: no-zero;
+ }
+
+.set-second-number { 
+    --second-number: var(--number);
+    --number-decimal-shift: 10000000;
+    --number-decimal-display: pad-7;
+ }
+
+
+input#operation-divison:checked ~ .set-operation .determine-numbers {
+    --number: calc(var(--first-number) / var(--second-number));
+}
+
+input#operation-plus:checked ~ .set-operation .determine-numbers {
+    --number: calc(var(--first-number) + var(--second-number));
+}
+
+input#operation-minus:checked ~ .set-operation .determine-numbers {
+    --number: calc(var(--first-number) - var(--second-number));
+}
+
+input#operation-multiplication:checked ~ .set-operation .determine-numbers {
+    --number: calc(var(--first-number) * var(--second-number));
+}
+
+input[name="equals"]:checked ~ * .answer-display > .integer::after {
+    content: counter(number-integer);
+}
+
+
+#reduced-functions:not(:checked) ~ form input[name="operation"]#operation-divison:checked ~ input[name="equals"]:checked ~ * .answer-display > .decimal::after,
+#reduced-functions:not(:checked) ~ form input[name$="decimal-point"]:checked ~ * input[name="equals"]:checked ~ * .answer-display > .decimal::after,
+#reduced-functions:not(:checked) ~ form input[name="equals"]:checked ~ * input[name$="decimal-point"]:checked ~ * .answer-display > .decimal::after {
+    content: "." counter(number-decimal, pad-7);
+}
+
+
+.numbers-pad { display: none; }
+
+.numbers-pad.first { display: block; }
+
+input[name$="digit"]:checked ~ * > .numbers-pad { display: block; }
+
+input[name="operation"]:checked ~ * .numbers-pad.second-number-first {
+    display: block;
+}
+
+input[name="equals"]:checked ~ * .numbers-pad.only-reset { display: block }
+
+input[name="second-number-decimal-point"]:checked ~ * label[for^="second-number-decimal-point"] { display: none; }
+input[name="first-number-decimal-point"]:checked ~ * label[for^="first-number-decimal-point"] { display: none; }
+
+#reduced-functions:checked ~ form label[for$="first-digit-0"],
+#reduced-functions:checked ~ form label[for*="-decimal-point"] { 
+    display: none; 
+} 
+
+.operation-pad {
+    display: none;
+}
+
+input[name="first-number-first-digit"]:checked ~ * .operation-pad.regular-pad {
+    display: block;
+}
+
+input[name="operation"]:checked ~ * .operation-pad.regular-pad {
+    display: none !important;
+}
+
+input[name="second-number-first-digit"]:checked ~ * .operation-pad.equals-pad { display: block; }
+
+input[name="equals"]:checked ~ * .operation-pad.equals-pad { display: none }
+
+.numbers-pad.only-reset {
+    display: none;
+}
+
+input#operation-multiplication:checked ~ * input[name="second-number-fourth-digit"]:checked ~ * .numbers-pad.only-reset,
+input[name="first-number-fifth-digit"]:checked ~ * > .numbers-pad.only-reset {
+    display: block;
+}
+
+input {
+    display: none;
+}
+
+.answer-display {
+    font-size: 0px;
+    z-index: 500;
+    padding-left: 15px;
+}
+
+.display { font-size: 0px; }
+
+.display > span { font-size: 36px; }
+
+.display.answer-display > span { font-size: 30px; }
+
+#reduced-functions:not(:checked) ~ form .number-display {
+    counter-reset: number-integer number-decimal;
+    --abs-number: max(var(--number), -1 * var(--number));
+    --property-integer: calc(var(--abs-number) - 0.4999999);
+    --number-integer: var(--property-integer);
+    --number-decimal: calc((var(--abs-number) - var(--property-integer)) * var(--number-decimal-shift));
+    
+    --sign-number: calc(var( --abs-number) / var(--number));
+}
+
+#reduced-functions:not(:checked) ~ form .number-display > .integer {
+    counter-increment: number-integer var(--number-integer);
+}
+
+.number-display > .integer {
+    counter-reset: number-integer;
+    counter-increment: number-integer var(--number);
+}
+  
+.number-display > .decimal {
+    counter-increment: number-decimal var(--number-decimal);
+}
+
+.number-display > .negative-sign {
+    counter-increment: number-sign var(--sign-number);
+}
+
+input[name="equals"]:checked ~ * .number-display > .negative-sign::after {
+    content: "= " counter(number-sign, number-sign);
+}
+
+#reduced-functions:checked ~ form input[name="equals"]:checked ~ * .number-display > .negative-sign::after {
+    content: "= "
+}
+
+input[name="first-number-first-digit"]:checked ~ * .first-number-display > .integer::after,
+input[name="second-number-first-digit"]:checked ~ * .second-number-display > .integer::after {
+    content: counter(number-integer)
+}
+
+input[name="first-number-decimal-point"]:checked ~ * .first-number-display > .decimal::after,
+input[name="second-number-decimal-point"]:checked ~ * .second-number-display > .decimal::after {
+    content: "." counter(number-decimal, var(--number-decimal-display));
+}
+
+input[name="operation"]#operation-plus:checked ~ * .operation::after { content: "\2008 +"; }
+input[name="operation"]#operation-minus:checked ~ * .operation::after { content: "\2008 -"; }
+input[name="operation"]#operation-divison:checked ~ * .operation::after { content: "\2008 ÷"; }
+input[name="operation"]#operation-multiplication:checked ~ * .operation::after { content: "\2008 ×"; }
+
+input[id^="second-number"][id$="1"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="2"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="3"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="4"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="5"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="6"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="7"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="8"][id*="digit"]:checked ~ * ~ * .divide-by-zero,
+input[id^="second-number"][id$="9"][id*="digit"]:checked ~ * ~ * .divide-by-zero
+{ display: none !important; }
+.divide-by-zero { display: none; }
+
+input[name="operation"]#operation-divison:checked ~ input[name="equals"]:checked ~ * .divide-by-zero { display: block; }
+
+.message {
+    position: absolute;
+    margin: 0 8px;
+    z-index: 2;
+    
+    height: 318px;
+    background-color: darkgray;
+    border-radius: 15px;
+
+    text-align: center;
+    padding: 5px;
+}
+
+@font-face {
+    font-family: 'Orbitron';
+    font-style: normal;
+    font-weight: 400;
+    src: url(font.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+body { 
+    font-family: Orbitron;
+    background-color: lightgray;
+    font-size: 36px;
+
+    /* -webkit-user-select: none; /* Safari */        
+    /*-moz-user-select: none;  Firefox */
+    /*-ms-user-select: none;  IE10+/Edge */
+    /*user-select: none; Standard */
+}  
+
+.calculator {
+    position: relative;
+    background-color: yellowgreen;
+    width: 420px;
+    height: 450px;
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.pad {
+    position: absolute;
+    top: 85px;
+
+    background-color: slategray;
+    width: 420px;
+    height: 390px;
+    border-radius: 15px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+label:not([for="reduced-functions"]) {
+    display: inline-block;
+    height: 85px;
+    width: 85px;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 15px;
+    
+    background-color: black;
+    color: white;
+    text-align: center;
+    line-height: 85px;
+}
+
+label[for="reset"] {
+    margin-bottom: 10px;
+}
+
+.numbers-pad.only-reset label[for="reset"] {
+    position: relative;
+    margin-top: 295px;
+}
+
+.numbers-pad {
+    position: absolute;
+    z-index: 1;
+    top: 85px;
+
+    border-radius: 15px;
+    background-color: slategray;
+    width: 310px;
+    height: 390px;
+}
+
+.operation-pad {
+    position: absolute;
+    right: 80px;
+    bottom: -14px;
+    z-index: 1;
+
+    width: 30px;
+}
+
+.first-number-display {
+    margin-left: 10px;
+}
+
+a {
+    width: 10px;
+    text-decoration: none !important;
+}
+
+.info {
+    display: none;
+}
+
+input#show-info:checked ~ * .info {
+    display: block;
+}
+
+label[for="show-info"] {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    margin: 0;
+
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+
+    color: white;
+    font-size: 10px;
+    line-height: 30px;
+}
+
+label[for="reduced-functions"] {
+    background-color: darkgray;
+}
